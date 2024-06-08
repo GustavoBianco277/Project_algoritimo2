@@ -1,4 +1,4 @@
-package projeto;
+package biblioteca;
 
 public class Livro {
 	String titulo;
