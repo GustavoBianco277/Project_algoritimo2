@@ -61,6 +61,7 @@ public class Biblioteca {
 		l.genero = lerString("Gênero");
 		l.isbn = lerISBN();
 		
+		livros.add(l);
 	}
 	
 	private static String lerString(String txt) {
