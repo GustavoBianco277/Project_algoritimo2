@@ -43,12 +43,12 @@ public class Biblioteca {
 	}
 
 	private static int menu() {
-		int op = Integer.parseInt(JOptionPane.showInputDialog(null, "1 - Cadastrar Livro\n"
+		int op = lerInt("1 - Cadastrar Livro\n"
 				+ "2 - Locaçizar livro por ISBN\n"
 				+ "3 - Verificar livros emprestados\n"
 				+ "4 - Dados dos livros publicados em 2020\n"
 				+ "5 - Listar livros por gênero\n"
-				+ "6 - Sair"));
+				+ "6 - Sair");
 		
 		return op;
 	}
@@ -57,7 +57,7 @@ public class Biblioteca {
 		Livro l = new Livro();
 		l.titulo = lerString("Titulo");
 		l.autor = lerString("Autor");
-		l.ano_publicacao = lerInt("Ano de publicação");
+		//l.ano_publicacao = lerInt("Ano de publicação");
 		l.genero = lerString("Gênero");
 		l.isbn = lerISBN();
 		
@@ -66,19 +66,23 @@ public class Biblioteca {
 	
 	private static String lerString(String txt) {
 		String s = JOptionPane.showInputDialog(txt);
-		if (s.trim().length() <= 2)
+		if (s.trim().isEmpty()) {
+			msg("Valor invalido !");
 			return lerString(txt);
+		}
 		else
 			return s;
 	}
 	
 	private static int lerInt(String txt) {
-		int n = Integer.parseInt(JOptionPane.showInputDialog(txt));
+		String s = lerString(txt);
 		
-		if (n > 0)
-			return n;
-		else
+		if (s.length() > 1 || !Character.isDigit(s.charAt(0))) {
+			msg("Valor invalido!");
 			return lerInt(txt);
+		}
+		
+		return Integer.parseInt(s);
 	}
 	
 	private static String lerISBN() {
@@ -109,7 +113,7 @@ public class Biblioteca {
 		}
 	}
 	
-	private static void msg(String msm) {
-		JOptionPane.showMessageDialog(null, msm);
+	private static void msg(String txt) {
+		JOptionPane.showMessageDialog(null, txt);
 	}
 }
