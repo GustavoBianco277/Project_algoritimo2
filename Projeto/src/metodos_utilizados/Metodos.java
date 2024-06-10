@@ -27,11 +27,24 @@ public class Metodos {
 	}
 	
 	public static String lerString(String txt) {
-		String s = JOptionPane.showInputDialog(txt);
-		if (s.trim().length() < 3)
+		String s = JOptionPane.showInputDialog(txt).trim();
+		
+		if (s.isEmpty())
 			return lerString(txt);
+		
 		else
 			return s;
+	}
+	
+	public static int lerOpcao(String txt) {
+		String s = lerString(txt);
+		
+		if (!Character.isDigit(s.charAt(0))) {
+			msg("Valor invalido!");
+			return lerOpcao(txt);
+		}
+		
+		return Integer.parseInt(s);
 	}
 	
 	public static Date lerData() throws ParseException {

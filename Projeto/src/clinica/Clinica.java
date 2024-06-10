@@ -78,9 +78,9 @@ public class Clinica {
 	
 	
 	private static String lerNumeroSUS() {
-		String s = Metodos.lerString("Numero do SUS").replace("-", "");
+		String s = Metodos.lerString("Numero do SUS").replace("-", "").replace(" ", "");
 		
-		if (s.length() == 13) {
+		if (s.length() == 15) {
 			if (Metodos.isNumeric(s))
 				return s;
 			

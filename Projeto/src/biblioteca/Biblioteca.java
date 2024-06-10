@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 
+import metodos_utilizados.Metodos;
+
 public class Biblioteca {
 
 	public static void main(String[] args) {
@@ -32,10 +34,10 @@ public class Biblioteca {
 				
 				break;
 			case 6:
-				msg("Programa finalizado !");
+				Metodos.msg("Programa finalizado !");
 				break;
 			default:
-				msg("Valor invalido!");
+				Metodos.msg("Valor invalido!");
 			}
 			
 		}while(op != 6);
@@ -43,77 +45,42 @@ public class Biblioteca {
 	}
 
 	private static int menu() {
-		int op = lerInt("1 - Cadastrar Livro\n"
+		int op = Metodos.lerOpcao("1 - Cadastrar Livro\n"
 				+ "2 - Locaçizar livro por ISBN\n"
 				+ "3 - Verificar livros emprestados\n"
 				+ "4 - Dados dos livros publicados em 2020\n"
 				+ "5 - Listar livros por gênero\n"
 				+ "6 - Sair");
-		
 		return op;
 	}
 	
-	public static void cadastrar(ArrayList<Livro> livros) {
+	private static void cadastrar(ArrayList<Livro> livros) {
 		Livro l = new Livro();
-		l.titulo = lerString("Titulo");
-		l.autor = lerString("Autor");
+		l.titulo = Metodos.lerString("Titulo");
+		l.autor = Metodos.lerString("Autor");
 		//l.ano_publicacao = lerInt("Ano de publicação");
-		l.genero = lerString("Gênero");
+		l.genero = Metodos.lerString("Gênero");
 		l.isbn = lerISBN();
 		
 		livros.add(l);
 	}
 	
-	private static String lerString(String txt) {
-		String s = JOptionPane.showInputDialog(txt);
-		if (s.trim().isEmpty()) {
-			msg("Valor invalido !");
-			return lerString(txt);
-		}
-		else
-			return s;
-	}
-	
-	private static int lerInt(String txt) {
-		String s = lerString(txt);
-		
-		if (s.length() > 1 || !Character.isDigit(s.charAt(0))) {
-			msg("Valor invalido!");
-			return lerInt(txt);
-		}
-		
-		return Integer.parseInt(s);
-	}
-	
 	private static String lerISBN() {
-		String s = lerString("Numero ISBN").replace("-", "");
+		String s = Metodos.lerString("Numero ISBN").replace("-", "").replace(" ", "");
 		if (s.length() == 13) {
-			boolean isNumeric = true;
 			
-			for (int i = 0; i < s.length(); i++) {
-				char c = s.charAt(i);
-				
-				if (Character.isAlphabetic(c)) {
-					isNumeric = false;
-					break;
-				}
-				
-			}
-			if (isNumeric)
+			if (Metodos.isNumeric(s))
 				return s;
+			
 			else {
-				msg("Numero invalido!");
+				Metodos.msg("Numero invalido!");
 				return lerISBN();
 			}
 		}
 		
 		else {
-			msg("Numero invalido!");
+			Metodos.msg("Numero invalido!");
 			return lerISBN();
 		}
-	}
-	
-	private static void msg(String txt) {
-		JOptionPane.showMessageDialog(null, txt);
 	}
 }
