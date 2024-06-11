@@ -1,5 +1,10 @@
 package clinica;
 
+import java.util.Date;
+
 public class Diagnostico {
-	String sintomas;
+	public String nome;
+    public Date data;
+    public String descricao;
+    public String medicoResponsavel;
 }

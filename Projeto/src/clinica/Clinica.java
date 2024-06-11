@@ -69,10 +69,12 @@ public class Clinica {
 	private static void cadastrar(ArrayList<Paciente> pacientes) throws ParseException {
 		Paciente p = new Paciente();
 		p.nome = Metodos.lerString("Nome");
-		p.data_nascimento = Metodos.lerData();
+		p.data_nascimento = Metodos.lerData("Data de nascimento [dd/mm/yyyy]");
 		p.genero = Metodos.lerString("Gênero");
 		p.nr_SUS = lerNumeroSUS();
+		p.diagnosticos = salvaDiagnosticos();
 		
+		pacientes.add(p);
 	}
 	
 	
@@ -96,21 +98,40 @@ public class Clinica {
 		}
 	}
 	
-	private static ArrayList<Diagnostico> salvaDiagnosticos(){
+	private static ArrayList<Diagnostico> salvaDiagnosticos() throws ParseException{
 		ArrayList<Diagnostico> diagnosticos = new ArrayList<Diagnostico>();
 		int op = 0;
+		int quantidade = 0;
 		
 		do {
+			op = Metodos.lerOpcao("1 - Adicionar diagnostico\n"
+					+ "2 - Sair");
 			
+			if (op == 1) {
+				diagnosticos.add(lerDiagnostico());
+				quantidade ++;
+			}
+				
+			if (op == 2) {
+				if (quantidade == 0) {
+					Metodos.msg("Cadastre ao menos 1 diagnostico");
+					op = 0;
+				}
+				else
+					Metodos.msg("Cadastrado !");
+			}
 			
-		} while(op != 0);
+		} while(op != 2);
 		
 		return diagnosticos;
 	}
 	
-	private static Diagnostico lerDiagnostico() {
+	private static Diagnostico lerDiagnostico() throws ParseException {
 		Diagnostico d = new Diagnostico();
-		d.sintomas = Metodos.lerString("Sintomas");
+		d.nome = Metodos.lerString("Nome");
+		d.descricao = Metodos.lerString("Descrição");
+		d.data = Metodos.lerData("Data de diagnostico [dd/mm/yyyy]");
+		d.medicoResponsavel = Metodos.lerString("Nome do medico responsavel");
 		return d;
 		
 	}

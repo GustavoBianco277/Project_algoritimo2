@@ -29,7 +29,7 @@ public class Metodos {
 	public static String lerString(String txt) {
 		String s = JOptionPane.showInputDialog(txt).trim();
 		
-		if (s.isEmpty())
+		if (s.isEmpty() || s.length() < 3)
 			return lerString(txt);
 		
 		else
@@ -37,7 +37,7 @@ public class Metodos {
 	}
 	
 	public static int lerOpcao(String txt) {
-		String s = lerString(txt);
+		String s = JOptionPane.showInputDialog(txt);
 		
 		if (!Character.isDigit(s.charAt(0))) {
 			msg("Valor invalido!");
@@ -47,14 +47,40 @@ public class Metodos {
 		return Integer.parseInt(s);
 	}
 	
-	public static Date lerData() throws ParseException {
+	public static Date lerData(String txt) throws ParseException {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		String s = lerString("Data de nascimento [dd/mm/yyyy]").replace("/", "");
+		String s = lerString(txt).replace("/", "");
 		
-		if (s.length() == 8 && isNumeric(s)) 
-			return sdf.parse(s);
+		if (s.length() == 8 && isNumeric(s)) {
+			String data = "";
+			
+			// adiciona / na data
+			for (int i = 0; i < 8; i++) {
+				data += s.charAt(i);
+				
+				if (i == 1 || i == 3)
+					data += "/";
+
+			}
+
+			// valida a data
+			String[] data_part = data.split("/");
+			int dia = Integer.parseInt(data_part[0]);
+			int mes = Integer.parseInt(data_part[1]);
+			int ano = Integer.parseInt(data_part[2]);
+			
+			if (dia <= 31 && dia > 0 && mes <= 12 && mes > 0 && ano <= 2024 && ano > 1850 )
+				return sdf.parse(data);
+			
+			else {
+				msg("Data inválida !");
+				return lerData(txt);
+			}
+		}
 		
-		else
-			return lerData();
+		else{
+			msg("Data inválida !");
+			return lerData(txt);
+		}
 	}
 }
