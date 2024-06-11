@@ -1,23 +1,13 @@
 package clinica;
-
-import javax.swing.JOptionPane;
-import javax.swing.ProgressMonitorInputStream;
-
-import biblioteca.Livro;
 import metodos_utilizados.Metodos;
-
 import java.util.ArrayList;
-import java.util.Date;
-import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 import java.text.ParseException;
 
 public class Clinica {
 
 	public static void main(String[] args) throws ParseException {
-		//SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		//Date data2 = sdf.parse("12/01/2000");
-		//System.out.println("Data formatada: "+sdf.format(data2));
-		
 		ArrayList<Paciente> pacientes = new ArrayList<Paciente>();
 		
 		int op = 0;
@@ -107,10 +97,14 @@ public class Clinica {
 		Metodos.msg(output);
 	}
 	
-	private static void todosNascidosEm2000(ArrayList<Paciente> pacientes) {
+	private static void todosNascidosEm2000(ArrayList<Paciente> pacientes) throws ParseException {
 		String output = "Pacientes Nascidos em 2000\n\n";
+		Calendar c = Calendar.getInstance();
+		
 		for (Paciente p : pacientes) {
-			if (p.data_nascimento.getYear() == 2000) {
+			c.setTime(p.data_nascimento);
+			
+			if (c.get(Calendar.YEAR) == 2000) {
 				output += mostraPaciente(p);
 			}
 		}
@@ -119,7 +113,7 @@ public class Clinica {
 	
 	private static void todosDeUmGenero(ArrayList<Paciente> pacientes) {
 		String genero = Metodos.leGenero("Gênero");
-		String output = "Pacientes do Gênero "+genero;
+		String output = "Pacientes do Gênero "+genero + "\n\n";
 		
 		for (Paciente p : pacientes) {
 			if (p.genero.equals(genero)) {
@@ -133,7 +127,7 @@ public class Clinica {
 		return String.format("Sintomas: %s\n"
 				+ "Descrição: %s\n"
 				+ "Data: %s\n"
-				+ "Medico responsavel: %s\n", diagnostico.nome, diagnostico.descricao, Metodos.escreveData(diagnostico.data), diagnostico.medicoResponsavel);
+				+ "Medico responsavel: %s\n", diagnostico.sintomas, diagnostico.descricao, Metodos.escreveData(diagnostico.data), diagnostico.medicoResponsavel);
 	}
 	
 	private static String lerNumeroSUS() {
@@ -185,7 +179,7 @@ public class Clinica {
 	
 	private static Diagnostico leDiagnostico() throws ParseException {
 		Diagnostico d = new Diagnostico();
-		d.nome = Metodos.leNome("Sintomas");
+		d.sintomas = Metodos.leNome("Sintomas");
 		d.descricao = Metodos.leNome("Descrição");
 		d.data = Metodos.lerData("Data de diagnostico [dd/mm/yyyy]");
 		d.medicoResponsavel = Metodos.leNome("Nome do medico responsavel");
@@ -193,10 +187,9 @@ public class Clinica {
 		
 	}
 	private static String mostraPaciente(Paciente p){
-		return String.format("Nome; %s \n"
-				+ "Data de nascimento: %s /n"
-				+ "Gênero: %s /n"
-				+ "Numero do SUS: %s \n", p.nome, Metodos.escreveData(p.data_nascimento), p.genero, p.nr_SUS);
+		return String.format("Nome: %s\n"
+				+ "Data de nascimento: %s\n"
+				+ "Gênero: %s\n"
+				+ "Numero do SUS: %s\n", p.nome, Metodos.escreveData(p.data_nascimento), p.genero, p.nr_SUS);
 	}
-
 }

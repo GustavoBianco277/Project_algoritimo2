@@ -4,9 +4,9 @@ import java.util.Date;
 import java.util.ArrayList;
 
 public class Paciente {
-	String nome;
-	Date data_nascimento;
-	String genero;
-	String nr_SUS;
-	ArrayList<Diagnostico> diagnosticos = new ArrayList<Diagnostico>();
+	protected String nome;
+	protected Date data_nascimento;
+	protected String genero;
+	protected String nr_SUS;
+	protected ArrayList<Diagnostico> diagnosticos = new ArrayList<Diagnostico>();
 }

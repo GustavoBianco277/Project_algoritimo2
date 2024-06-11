@@ -50,7 +50,7 @@ public class Metodos {
 		String s = leString(txt);
 		
 		if (s.length() == 1 && s.equalsIgnoreCase("M") || s.length() == 1 && s.equalsIgnoreCase("F")) 
-			return s;
+			return s.toUpperCase();
 		
 		else {
 			msg("Gênero invalido !");
@@ -77,7 +77,7 @@ public class Metodos {
 		if (s.length() == 8 && isNumeric(s)) {
 			String data = "";
 			
-			// adiciona / na data
+			// adiciona na data
 			for (int i = 0; i < 8; i++) {
 				data += s.charAt(i);
 				
