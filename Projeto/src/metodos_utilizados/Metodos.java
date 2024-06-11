@@ -26,22 +26,45 @@ public class Metodos {
 		return isNumeric;
 	}
 	
-	public static String lerString(String txt) {
+	public static String leString(String txt) {
 		String s = JOptionPane.showInputDialog(txt).trim();
 		
-		if (s.isEmpty() || s.length() < 3)
-			return lerString(txt);
+		if (s.isEmpty())
+			return leString(txt);
 		
 		else
 			return s;
 	}
 	
-	public static int lerOpcao(String txt) {
+	public static String leNome(String txt) {
+		String s = leString(txt);
+		
+		if (s.length() < 3)
+			return leString(txt);
+		
+		else
+			return s;
+	}
+	
+	public static String leGenero(String txt) {
+		String s = leString(txt);
+		
+		if (s.length() == 1 && s.equalsIgnoreCase("M") || s.length() == 1 && s.equalsIgnoreCase("F")) 
+			return s;
+		
+		else {
+			msg("Gênero invalido !");
+			return leString(txt);
+		}
+			
+	}
+	
+	public static int leOpcao(String txt) {
 		String s = JOptionPane.showInputDialog(txt);
 		
 		if (!Character.isDigit(s.charAt(0))) {
 			msg("Valor invalido!");
-			return lerOpcao(txt);
+			return leOpcao(txt);
 		}
 		
 		return Integer.parseInt(s);
@@ -49,7 +72,7 @@ public class Metodos {
 	
 	public static Date lerData(String txt) throws ParseException {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		String s = lerString(txt).replace("/", "");
+		String s = leString(txt).replace("/", "");
 		
 		if (s.length() == 8 && isNumeric(s)) {
 			String data = "";
@@ -82,5 +105,10 @@ public class Metodos {
 			msg("Data inválida !");
 			return lerData(txt);
 		}
+	}
+	
+	public static String escreveData(Date data) {
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		return sdf.format(data);
 	}
 }

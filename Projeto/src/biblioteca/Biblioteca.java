@@ -45,7 +45,7 @@ public class Biblioteca {
 	}
 
 	private static int menu() {
-		int op = Metodos.lerOpcao("1 - Cadastrar Livro\n"
+		int op = Metodos.leOpcao("1 - Cadastrar Livro\n"
 				+ "2 - Locaçizar livro por ISBN\n"
 				+ "3 - Verificar livros emprestados\n"
 				+ "4 - Dados dos livros publicados em 2020\n"
@@ -56,17 +56,17 @@ public class Biblioteca {
 	
 	private static void cadastrar(ArrayList<Livro> livros) {
 		Livro l = new Livro();
-		l.titulo = Metodos.lerString("Titulo");
-		l.autor = Metodos.lerString("Autor");
+		l.titulo = Metodos.leNome("Titulo");
+		l.autor = Metodos.leNome("Autor");
 		//l.ano_publicacao = lerInt("Ano de publicação");
-		l.genero = Metodos.lerString("Gênero");
+		l.genero = Metodos.leGenero("Gênero");
 		l.isbn = lerISBN();
 		
 		livros.add(l);
 	}
 	
 	private static String lerISBN() {
-		String s = Metodos.lerString("Numero ISBN").replace("-", "").replace(" ", "");
+		String s = Metodos.leString("Numero ISBN").replace("-", "").replace(" ", "");
 		if (s.length() == 13) {
 			
 			if (Metodos.isNumeric(s))
