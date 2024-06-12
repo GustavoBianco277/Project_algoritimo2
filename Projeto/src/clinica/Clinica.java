@@ -44,7 +44,7 @@ public class Clinica {
 	}
 	
 	private static int menu() {
-		int op = Metodos.leOpcao("1 - Cadastrar Paciente\n"
+		int op = Metodos.lerInt("1 - Cadastrar Paciente\n"
 				+ "2 - Localizar Paciente pelo numero do SUS\n"
 				+ "3 - Verificar diagnosticos pelo nome do paciente\n"
 				+ "4 - Dados de todos os paciente nascidos em 2000\n"
@@ -56,9 +56,9 @@ public class Clinica {
 	
 	private static void cadastrar(ArrayList<Paciente> pacientes) throws ParseException {
 		Paciente p = new Paciente();
-		p.nome = Metodos.leNome("Nome");
+		p.nome = Metodos.lerNome("Nome");
 		p.data_nascimento = Metodos.lerData("Data de nascimento [dd/mm/yyyy]");
-		p.genero = Metodos.leGenero("Gênero");
+		p.genero = Metodos.lerGenero("Gênero");
 		p.nr_SUS = lerNumeroSUS();
 		p.diagnosticos = salvaDiagnosticos();
 		
@@ -82,7 +82,7 @@ public class Clinica {
 	}
 	
 	private static void procurarPeloNome(ArrayList<Paciente> pacientes) {
-		String nome = Metodos.leNome("Nome");
+		String nome = Metodos.lerNome("Nome");
 		String output = "Nenhum paciente encontrado !";
 		
 		for (Paciente p : pacientes) {
@@ -112,7 +112,7 @@ public class Clinica {
 	}
 	
 	private static void todosDeUmGenero(ArrayList<Paciente> pacientes) {
-		String genero = Metodos.leGenero("Gênero");
+		String genero = Metodos.lerGenero("Gênero");
 		String output = "Pacientes do Gênero "+genero + "\n\n";
 		
 		for (Paciente p : pacientes) {
@@ -131,7 +131,7 @@ public class Clinica {
 	}
 	
 	private static String lerNumeroSUS() {
-		String s = Metodos.leString("Numero do SUS").replace("-", "").replace(" ", "");
+		String s = Metodos.lerString("Numero do SUS").replace("-", "").replace(" ", "");
 		
 		if (s.length() == 15) {
 			if (Metodos.isNumeric(s))
@@ -155,7 +155,7 @@ public class Clinica {
 		int quantidade = 0;
 		
 		do {
-			op = Metodos.leOpcao("1 - Adicionar diagnostico\n"
+			op = Metodos.lerInt("1 - Adicionar diagnostico\n"
 					+ "2 - Sair");
 			
 			if (op == 1) {
@@ -179,10 +179,10 @@ public class Clinica {
 	
 	private static Diagnostico leDiagnostico() throws ParseException {
 		Diagnostico d = new Diagnostico();
-		d.sintomas = Metodos.leNome("Sintomas");
-		d.descricao = Metodos.leNome("Descrição");
+		d.sintomas = Metodos.lerNome("Sintomas");
+		d.descricao = Metodos.lerNome("Descrição");
 		d.data = Metodos.lerData("Data de diagnostico [dd/mm/yyyy]");
-		d.medicoResponsavel = Metodos.leNome("Nome do medico responsavel");
+		d.medicoResponsavel = Metodos.lerNome("Nome do medico responsavel");
 		return d;
 		
 	}

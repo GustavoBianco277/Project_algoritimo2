@@ -2,9 +2,12 @@ package metodos_utilizados;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import javax.swing.JOptionPane;
+
+import clinica.Paciente;
 
 public class Metodos {
 	
@@ -26,45 +29,45 @@ public class Metodos {
 		return isNumeric;
 	}
 	
-	public static String leString(String txt) {
+	public static String lerString(String txt) {
 		String s = JOptionPane.showInputDialog(txt).trim();
 		
 		if (s.isEmpty())
-			return leString(txt);
+			return lerString(txt);
 		
 		else
 			return s;
 	}
 	
-	public static String leNome(String txt) {
-		String s = leString(txt);
+	public static String lerNome(String txt) {
+		String s = lerString(txt);
 		
 		if (s.length() < 3)
-			return leString(txt);
+			return lerNome(txt);
 		
 		else
 			return s;
 	}
 	
-	public static String leGenero(String txt) {
-		String s = leString(txt);
+	public static String lerGenero(String txt) {
+		String s = lerString(txt);
 		
 		if (s.length() == 1 && s.equalsIgnoreCase("M") || s.length() == 1 && s.equalsIgnoreCase("F")) 
 			return s.toUpperCase();
 		
 		else {
 			msg("Gênero invalido !");
-			return leString(txt);
+			return lerString(txt);
 		}
 			
 	}
 	
-	public static int leOpcao(String txt) {
+	public static int lerInt(String txt) {
 		String s = JOptionPane.showInputDialog(txt);
 		
-		if (!Character.isDigit(s.charAt(0))) {
+		if (!isNumeric(s)) {
 			msg("Valor invalido!");
-			return leOpcao(txt);
+			return lerInt(txt);
 		}
 		
 		return Integer.parseInt(s);
@@ -72,7 +75,7 @@ public class Metodos {
 	
 	public static Date lerData(String txt) throws ParseException {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		String s = leString(txt).replace("/", "");
+		String s = lerString(txt).replace("/", "");
 		
 		if (s.length() == 8 && isNumeric(s)) {
 			String data = "";
@@ -110,5 +113,11 @@ public class Metodos {
 	public static String escreveData(Date data) {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		return sdf.format(data);
+	}
+	
+	public static int lerAno(Date data) {
+		Calendar c = Calendar.getInstance();
+		c.setTime(data);	
+		return c.get(Calendar.YEAR);
 	}
 }
