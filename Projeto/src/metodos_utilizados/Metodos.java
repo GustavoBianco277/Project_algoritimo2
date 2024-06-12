@@ -57,7 +57,7 @@ public class Metodos {
 		
 		else {
 			msg("Gênero invalido !");
-			return lerString(txt);
+			return lerGenero(txt);
 		}
 			
 	}

@@ -65,7 +65,8 @@ public class Video_Game {
 		j.titulo = Metodos.lerNome("Titulo");
 		j.data_lançamento = Metodos.lerData("Data de lançamento [dd/mm/yyyy]");
 		j.plataforma = Metodos.lerString("Plataforma");
-		j.nota = lerNota("Nota [1 a 5");
+		j.nota = lerNota("Nota [1 a 5]");
+		jogos.add(j);
 	}
 	
 	private static void listarTodos(ArrayList<Jogo> jogos) {
@@ -74,6 +75,7 @@ public class Video_Game {
 		for (Jogo j : jogos) {
 			output += mostraJogo(j);
 		}
+		Metodos.msg(output);
 	}
 	
 	private static void buscaJogos(ArrayList<Jogo> jogos, Modo_busca modo_de_busca, boolean Ano) {
@@ -81,7 +83,7 @@ public class Video_Game {
 		int ano = 0;
 		
 		if (modo_de_busca.equals(Modo_busca.Plataforma)) {
-			String plataforma = Metodos.lerNome("Plataforma");
+			String plataforma = Metodos.lerString("Plataforma");
 			ano = Ano ? Metodos.lerInt("Ano") : 0;
 			
 			for (Jogo j : jogos) {
@@ -103,6 +105,7 @@ public class Video_Game {
 				}
 			}
 		}
+		Metodos.msg(output);
 	}
 	
 	private static String mostraJogo(Jogo j) {
@@ -113,14 +116,7 @@ public class Video_Game {
 	}
 	
 	private static int lerNota(String txt) {
-		String s = JOptionPane.showInputDialog(txt);
-		int n = 0;
-		
-		if (!Character.isDigit(s.charAt(0))) {
-			Metodos.msg("Valor invalido!");
-			return lerNota(txt);
-		}
-		n = Integer.parseInt(s);
+		int n = Metodos.lerInt(txt);
 		
 		if (n >= 1 && n <= 5)
 			return n;
@@ -128,8 +124,6 @@ public class Video_Game {
 		else {
 			Metodos.msg("Valor invalido!");
 			return lerNota(txt);
-		}
-			
+		}	
 	}
-
 }

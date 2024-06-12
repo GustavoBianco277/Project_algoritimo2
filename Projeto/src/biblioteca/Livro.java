@@ -1,11 +1,15 @@
 package biblioteca;
 
+import java.util.ArrayList;
+import java.util.Date;
+
 public class Livro {
-	String titulo;
-	String autor;
-	int ano_publicacao;
-	String genero;
-	String isbn;
-	String[] emprestimos;
-	
+    protected String titulo;
+    protected String autor;
+    protected Date ano;
+    protected String genero;
+    protected String isbn;
+
+    ArrayList <Pessoa> pessoas = new ArrayList<Pessoa>();
+
 }
