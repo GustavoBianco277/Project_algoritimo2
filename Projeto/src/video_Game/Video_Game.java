@@ -11,7 +11,8 @@ public class Video_Game {
 
 	enum Modo_busca{
 		Plataforma,
-		Nota
+		Nota,
+		Plataform_Ano
 	}
 	public static void main(String[] args) throws ParseException {
 		ArrayList<Jogo> jogos = new ArrayList<Jogo>();
@@ -30,13 +31,13 @@ public class Video_Game {
 				break;
 			}
 			case 3:
-				buscaJogos(jogos, Modo_busca.Plataforma, false);
+				buscaJogos(jogos, Modo_busca.Plataforma);
 				break;
 			case 4:
-				buscaJogos(jogos, Modo_busca.Nota, false);
+				buscaJogos(jogos, Modo_busca.Nota);
 				break;
 			case 5:
-				buscaJogos(jogos, Modo_busca.Plataforma, true);
+				buscaJogos(jogos, Modo_busca.Plataform_Ano);
 				break;
 			case 6:
 				Metodos.msg("Programa finalizado !");
@@ -78,21 +79,27 @@ public class Video_Game {
 		Metodos.msg(output);
 	}
 	
-	private static void buscaJogos(ArrayList<Jogo> jogos, Modo_busca modo_de_busca, boolean Ano) {
+	private static void buscaJogos(ArrayList<Jogo> jogos, Modo_busca modo_de_busca) {
 		String output = "Jogos da plataforma \n\n";
-		int ano = 0;
 		
 		if (modo_de_busca.equals(Modo_busca.Plataforma)) {
 			String plataforma = Metodos.lerString("Plataforma");
-			ano = Ano ? Metodos.lerInt("Ano") : 0;
 			
 			for (Jogo j : jogos) {
 				if (j.plataforma.equalsIgnoreCase(plataforma)) {
-					if (Ano && Metodos.lerAno(j.data_lançamento) == ano) {
+					output += mostraJogo(j);
+				}
+			}
+		}
+		else if (modo_de_busca.equals(Modo_busca.Plataform_Ano)) {
+			int ano = Metodos.lerInt("Ano");
+			String plataforma = Metodos.lerString("Plataforma");
+			
+			for (Jogo j : jogos) {
+				if (j.plataforma.equalsIgnoreCase(plataforma)) {
+					if (Metodos.lerAno(j.data_lançamento) == ano) {
 						output += mostraJogo(j);
 					}
-					else if (!Ano)
-						output += mostraJogo(j);
 				}
 			}
 		}
