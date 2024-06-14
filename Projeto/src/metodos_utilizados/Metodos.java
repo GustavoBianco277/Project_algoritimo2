@@ -42,8 +42,10 @@ public class Metodos {
 	public static String lerNome(String txt) {
 		String s = lerString(txt);
 		
-		if (s.length() < 3)
+		if (s == null || s.length() < 3) {
+			msg("O nome deve ter pelo menos 3 caracteres, e não pode ser vazio");
 			return lerNome(txt);
+		}
 		
 		else
 			return s;
@@ -63,9 +65,9 @@ public class Metodos {
 	}
 	
 	public static int lerInt(String txt) {
-		String s = JOptionPane.showInputDialog(txt);
+		String s = JOptionPane.showInputDialog(txt).trim();
 		
-		if (!isNumeric(s)) {
+		if (s.isEmpty() || !isNumeric(s)) {
 			msg("Valor invalido!");
 			return lerInt(txt);
 		}
@@ -95,7 +97,8 @@ public class Metodos {
 			int mes = Integer.parseInt(data_part[1]);
 			int ano = Integer.parseInt(data_part[2]);
 			
-			if (dia <= 31 && dia > 0 && mes <= 12 && mes > 0 && ano <= 2024 && ano > 1850 )
+			// verifica se a data pe valida e que não seja maior que hoje
+			if (dia <= 31 && dia > 0 && mes <= 12 && mes > 0 && ano <= 2024 && ano > 1850 && sdf.parse(data).compareTo(Calendar.getInstance().getTime()) < 0)
 				return sdf.parse(data);
 			
 			else {

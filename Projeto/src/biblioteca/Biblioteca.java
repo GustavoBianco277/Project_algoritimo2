@@ -1,16 +1,20 @@
 package biblioteca;
 
-import java.text.ParseException;
-import java.util.ArrayList;
 
-import javax.swing.JOptionPane;
+import javax.swing.*;
 
 import metodos_utilizados.Metodos;
 
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.ListResourceBundle;
+
+
 public class Biblioteca {
 
-	public static void main(String[] args) throws ParseException {
-		ArrayList<Livro> livros = new ArrayList<Livro>();
+    public static void main(String[] args) throws ParseException {
+        ArrayList<Livro> livros = new ArrayList<Livro>();
 
         /*- Cadastra o livro -- (Método )
 1-Pode criar um método inteiro de cadastro passando as informações e as
@@ -37,9 +41,10 @@ Livros)
                 case 4:
                     todosLivros2020(livros);
                     break;
-                case 5:
+                case 5: listaGenerosLivros(livros);
                     break;
-
+                case 6 :
+                    JOptionPane.showMessageDialog(null,"SAINDOOOOOOOO.");
             }
         } while (op != 6);
     }
@@ -60,7 +65,7 @@ Livros)
         l.titulo = Metodos.lerNome("Titulo");
         l.autor = Metodos.lerNome("Autor");
         l.ano = Metodos.lerData("Data de criação [dd/mm/yyyy]");
-        l.genero = Metodos.lerNome("Gênero");
+        l.genero = Metodos.lerNome("Genero");
         l.isbn = lerISBN();
         l.pessoas = salvaPessoas();
 
@@ -113,7 +118,7 @@ Livros)
                 return livro;
             }
         }
-        Metodos.msg("Nenhum livro encontrado com o ISBN: " + codigoBusca); // Mensagem se o livro não for encontrado
+        Metodos.msg("Nenhum livro encontrado com o ISBN: " + codigoBusca);
         return null;
     }
 
@@ -144,20 +149,52 @@ Livros)
 
     private static void todosLivros2020(ArrayList<Livro> livros) throws ParseException {
         String output = "Livros de 2020\n\n";
-        
+        Calendar c = Calendar.getInstance();
+
         for (Livro l : livros) {
-            if (Metodos.lerAno(l.ano) == 2020) {
+            c.setTime(l.ano);
+
+            if (c.get(Calendar.YEAR) == 2020) {
                 output += mostraLivro(l);
             }
         }
         Metodos.msg(output);
     }
 
-    private static Pessoa lePessoa() throws ParseException  {
+    private static void listaGenerosLivros(ArrayList<Livro> livros) {
+        boolean continuar = true;
+
+        while (continuar) {
+            String generoLivro = Metodos.lerString("Genêro livro: ");
+            String saida = "";
+
+            for (Livro l : livros) {
+                if (generoLivro.equalsIgnoreCase(l.genero)) {
+                    saida += mostraLivro(l);
+                }
+            }
+
+            if (saida.equalsIgnoreCase("")) {
+                saida = "Nenhum livro encontrado com o gênero: " + generoLivro;
+            }
+            Metodos.msg(saida);
+
+            if (saida.equalsIgnoreCase("Nenhum livro encontrado com o gênero: " + generoLivro)) {
+                int resposta = JOptionPane.showConfirmDialog(null, "Deseja tentar novamente?", "Pergunta", JOptionPane.YES_NO_OPTION);
+                if (resposta != JOptionPane.YES_OPTION) {
+                    continuar = false;
+                }
+            } else {
+                continuar = false;
+            }
+        }
+    }
+
+    private static Pessoa lePessoa() throws ParseException {
         Pessoa p = new Pessoa();
         p.nome = Metodos.lerNome("Nome");
         p.idade = Metodos.lerData("Data de nascimento: ");
-        p.livroEmprestado = Metodos.lerString("Pegou o livro emprestado? s/n");
+        p.livroEmprestado = Metodos.lerString("Está com o livro emprestado ainda? s/n");
         return p;
     }
 
@@ -180,9 +217,11 @@ Livros)
 
     private static String mostraLivro(Livro l) {
 
-        return String.format("Nome: %s\n"
+        return String.format("Título: %s\n"
                 + "Data de lançamento: %s\n"
                 + "Gênero: %s\n"
-                + "Numero do ISBN: %s\n", l.titulo, Metodos.escreveData(l.ano), l.genero, l.isbn);
+                + "Número do ISBN: %s\n", l.titulo, Metodos.escreveData(l.ano), l.genero, l.isbn);
     }
+
 }
+
