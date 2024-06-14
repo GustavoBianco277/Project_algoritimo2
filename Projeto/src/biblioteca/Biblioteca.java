@@ -9,6 +9,7 @@ import metodos_utilizados.Metodos;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashSet;
 import java.util.ListResourceBundle;
 
 
@@ -71,7 +72,6 @@ Livros)
         l.pessoas = salvaPessoas();
 
         livros.add(l);
-
     }
 
 
@@ -108,12 +108,7 @@ Livros)
         String codigoBusca = Metodos.lerString("Código: ");
         for (Livro livro : livros) {
             if (livro.isbn.equalsIgnoreCase(codigoBusca)) {
-                String saida = "Livro achado ! " + "\n" +
-                        "Título: " + livro.titulo + "\n" +
-                        "Autor: " + livro.autor + "\n" +
-                        "Ano: " + Metodos.escreveData(livro.ano) + "\n" +
-                        "Gênero: " + livro.genero + "\n" +
-                        "ISBN: " + livro.isbn;
+                String saida = "Livro achado ! " + "\n" + mostraLivro(livro);
                 Metodos.msg(saida);
                 return livro;
             }
@@ -130,13 +125,7 @@ Livros)
             for (Pessoa ps : l.pessoas){
                 if (nomePessoa.equalsIgnoreCase(ps.nome) && ps.livroEmprestado.equalsIgnoreCase("s")){
                     saida += "\nNome : " + ps.nome + "\n" +
-                            "Idade: " + ps.idade + "\n" +
-                            "Título: " + l.titulo + "\n" +
-                            "Autor: " + l.autor + "\n" +
-                            "Ano: " + Metodos.escreveData(l.ano) + "\n" +
-                            "Gênero: " + l.genero + "\n" +
-                            "ISBN: " + l.isbn + "\n\n";
-
+                            "Idade: " + Metodos.calculaIdade(ps.idade) + "\n" + mostraLivro(l);
                 }
             }
         }
@@ -145,7 +134,6 @@ Livros)
         }
         Metodos.msg(saida);
     }
-
 
     private static void todosLivros2020(ArrayList<Livro> livros) throws ParseException {
         String output = "Livros de 2020\n\n";
@@ -163,7 +151,18 @@ Livros)
 
     private static void listaGenerosLivros(ArrayList<Livro> livros) {
         boolean continuar = true;
+        
+        HashSet<String> generosUnicos = new HashSet<>();   // USEI O HASH PARA QUE NÃO HOUVESSEM REPETIÇÕES DE GENERO
+        for (Livro l : livros) {                           // Estava ocorrendo então coloquei e armazeneio num hash para evitar duplicar
+            generosUnicos.add(l.genero);
+        }
 
+        String saidaGeneros = "Gêneros disponíveis:\n";
+        for (String genero : generosUnicos) {
+            saidaGeneros += genero + "\n";
+        }
+        Metodos.msg(saidaGeneros);
+        
         while (continuar) {
             String generoLivro = Metodos.lerString("Genêro livro: ");
             String saida = "";
@@ -174,7 +173,7 @@ Livros)
                 }
             }
 
-            if (saida.equalsIgnoreCase("")) {
+            if (saida.isEmpty()) {
                 saida = "Nenhum livro encontrado com o gênero: " + generoLivro;
             }
             Metodos.msg(saida);
@@ -199,7 +198,6 @@ Livros)
         p.livroEmprestado = Metodos.lerString("Está com o livro emprestado ainda? [s/n]");
         return p;
     }
-
 
     private static String lerISBN(ArrayList<Livro> livros) {
         String s = Metodos.lerString("Digite o ISBN (somente números, sem hífens com 13 Numeros)").replace("-", "").replace(" ", "");
@@ -235,12 +233,22 @@ Livros)
 	}
 
     private static String mostraLivro(Livro l) {
-
         return String.format("Título: %s\n"
+        		+ "Autor: %s\n"
                 + "Data de lançamento: %s\n"
                 + "Gênero: %s\n"
-                + "Número do ISBN: %s\n", l.titulo, Metodos.escreveData(l.ano), l.genero, l.isbn);
+                + "Número do ISBN: %s\n", l.titulo, l.autor, Metodos.escreveData(l.ano), l.genero, escreveISBN(l.isbn));
     }
+    private static String escreveISBN(String nr_ISBN) {
+		String newNr_ISBN = "";
+		for (int i = 0; i < nr_ISBN.length(); i++) {
+			if (i == 3 || i == 5 || i == 9 || i == 12 || i == 13)
+				newNr_ISBN += "-";
+			
+			newNr_ISBN += nr_ISBN.charAt(i);
+		}
+		return newNr_ISBN;
+	}
 
 }
 

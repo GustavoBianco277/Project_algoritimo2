@@ -128,4 +128,16 @@ public class Metodos {
 		c.setTime(data);	
 		return c.get(Calendar.YEAR);
 	}
+	
+	public static int calculaIdade(Date data) {
+		Calendar hoje = Calendar.getInstance();
+		Calendar dataSet = Calendar.getInstance();
+		dataSet.setTime(data);
+		int idade = hoje.get(Calendar.YEAR) - dataSet.get(Calendar.YEAR);
+		
+		if (hoje.before(dataSet))
+			idade--;
+		
+		return idade;
+	}
 }
