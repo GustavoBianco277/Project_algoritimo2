@@ -65,9 +65,9 @@ public class Metodos {
 	}
 	
 	public static int lerInt(String txt) {
-		String s = JOptionPane.showInputDialog(txt).trim();
+		String s = lerString(txt);
 		
-		if (s.isEmpty() || !isNumeric(s)) {
+		if (!isNumeric(s)) {
 			msg("Valor invalido!");
 			return lerInt(txt);
 		}
@@ -78,11 +78,15 @@ public class Metodos {
 	public static Date lerData(String txt) throws ParseException {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		String s = lerString(txt).replace("/", "");
+		Calendar dataHoje = Calendar.getInstance();
 		
-		if (s.length() == 8 && isNumeric(s)) {
+		if (s.length() != 8 || !isNumeric(s)) {
+			msg("Data inválida !");
+			return lerData(txt);
+		}
+		else {
 			String data = "";
-			
-			// adiciona na data
+			// adiciona / na data
 			for (int i = 0; i < 8; i++) {
 				data += s.charAt(i);
 				
@@ -91,25 +95,26 @@ public class Metodos {
 
 			}
 
-			// valida a data
+			// Válida a data
 			String[] data_part = data.split("/");
 			int dia = Integer.parseInt(data_part[0]);
 			int mes = Integer.parseInt(data_part[1]);
 			int ano = Integer.parseInt(data_part[2]);
 			
-			// verifica se a data pe valida e que não seja maior que hoje
-			if (dia <= 31 && dia > 0 && mes <= 12 && mes > 0 && ano <= 2024 && ano > 1850 && sdf.parse(data).compareTo(Calendar.getInstance().getTime()) < 0)
-				return sdf.parse(data);
-			
-			else {
+			// Verifica se a data é válida
+			if (dia > 31 || dia <= 0 || mes > 12 || mes <= 0 || ano > dataHoje.get(Calendar.YEAR) || ano <= 0) {
 				msg("Data inválida !");
 				return lerData(txt);
 			}
-		}
-		
-		else{
-			msg("Data inválida !");
-			return lerData(txt);
+			
+			else if (sdf.parse(data).compareTo(dataHoje.getTime()) >= 0) {
+				msg("Essa data ainda não chegou !");
+				return lerData(txt);
+			}
+			
+			else {
+				return sdf.parse(data);
+			}
 		}
 	}
 	

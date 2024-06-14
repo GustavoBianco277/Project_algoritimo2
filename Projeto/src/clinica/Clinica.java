@@ -58,15 +58,15 @@ public class Clinica {
 		Paciente p = new Paciente();
 		p.nome = Metodos.lerNome("Nome");
 		p.data_nascimento = Metodos.lerData("Data de nascimento [dd/mm/yyyy]");
-		p.genero = Metodos.lerGenero("Gênero");
-		p.nr_SUS = lerNumeroSUS();
+		p.genero = Metodos.lerGenero("Gênero [m/f]");
+		p.nr_SUS = lerNumeroSUS(pacientes);
 		p.diagnosticos = salvaDiagnosticos();
 		
 		pacientes.add(p);
 	}
 	
 	private static void procurarPeloSUS(ArrayList<Paciente> pacientes) {
-		String nr_SUS = lerNumeroSUS();
+		String nr_SUS = lerNumeroSUS(pacientes);
 		String output = "Nenhum paciente encontrado !";
 		
 		for (Paciente p : pacientes) {
@@ -112,7 +112,7 @@ public class Clinica {
 	}
 	
 	private static void todosDeUmGenero(ArrayList<Paciente> pacientes) {
-		String genero = Metodos.lerGenero("Gênero");
+		String genero = Metodos.lerGenero("Gênero [m/f]");
 		String output = "Pacientes do Gênero "+genero + "\n\n";
 		
 		for (Paciente p : pacientes) {
@@ -130,23 +130,38 @@ public class Clinica {
 				+ "Medico responsavel: %s\n", diagnostico.sintomas, diagnostico.descricao, Metodos.escreveData(diagnostico.data), diagnostico.medicoResponsavel);
 	}
 	
-	private static String lerNumeroSUS() {
+	private static String lerNumeroSUS(ArrayList<Paciente> pacientes) {
 		String s = Metodos.lerString("Numero do SUS").replace("-", "").replace(" ", "");
 		
-		if (s.length() == 15) {
-			if (Metodos.isNumeric(s))
-				return s;
+		if (s.length() != 15) 
+		{
+			Metodos.msg("Número inválido! O SUS deve ter 15 dígitos.");
+			return lerNumeroSUS(pacientes);
+		}
+		
+		else if (!Metodos.isNumeric(s)) {
+			Metodos.msg("Número inválido! Deve conter apenas dígitos.");
+			return lerNumeroSUS(pacientes);
+		}
+		
+		else if (verificaCadastroSUS(pacientes, s)) {
+			Metodos.msg("Número inválido! Já foi cadastrado.");
+			return lerNumeroSUS(pacientes);
+		}
 			
-			else {
-				Metodos.msg("Numero invalido!");
-				return lerNumeroSUS();
+		else {
+			return s;
+		}
+	}
+	
+	private static boolean verificaCadastroSUS(ArrayList<Paciente> pacientes, String nr_SUS) {
+		for (Paciente p : pacientes) {
+			if (p.nr_SUS.equalsIgnoreCase(nr_SUS)) {
+				return true;
 			}
 		}
 		
-		else {
-			Metodos.msg("Numero invalido!");
-			return lerNumeroSUS();
-		}
+		return false;
 	}
 	
 	private static ArrayList<Diagnostico> salvaDiagnosticos() throws ParseException{
@@ -190,6 +205,17 @@ public class Clinica {
 		return String.format("Nome: %s\n"
 				+ "Data de nascimento: %s\n"
 				+ "Gênero: %s\n"
-				+ "Numero do SUS: %s\n", p.nome, Metodos.escreveData(p.data_nascimento), p.genero, p.nr_SUS);
+				+ "Numero do SUS: %s\n", p.nome, Metodos.escreveData(p.data_nascimento), p.genero, escreveSUS(p.nr_SUS));
+	}
+	
+	private static String escreveSUS(String nr_SUS) {
+		String newNr_SUS = "";
+		for (int i = 0; i < nr_SUS.length(); i++) {
+			if (i == 3 || i == 7 || i == 11)
+				newNr_SUS += " ";
+			
+			newNr_SUS += nr_SUS.charAt(i);
+		}
+		return newNr_SUS;
 	}
 }

@@ -3,6 +3,7 @@ package biblioteca;
 
 import javax.swing.*;
 
+import clinica.Paciente;
 import metodos_utilizados.Metodos;
 
 import java.text.ParseException;
@@ -34,7 +35,7 @@ Livros)
                     cadastrarLivro(livros);
                     break;
                 case 2:
-                    pegaCódigoLivroISBN(livros);
+                    pegaCodigoLivroISBN(livros);
                     break;
                 case 3: mostrarLivrosEmprestado(livros);
                     break;
@@ -65,8 +66,8 @@ Livros)
         l.titulo = Metodos.lerNome("Titulo");
         l.autor = Metodos.lerNome("Autor");
         l.ano = Metodos.lerData("Data de criação [dd/mm/yyyy]");
-        l.genero = Metodos.lerNome("Genero");
-        l.isbn = lerISBN();
+        l.genero = Metodos.lerNome("Genero do livro");
+        l.isbn = lerISBN(livros);
         l.pessoas = salvaPessoas();
 
         livros.add(l);
@@ -87,14 +88,13 @@ Livros)
                 case 1:
                     pessoas.add(lePessoa());
                     cadastrado = true;
+                    Metodos.msg("Cadastrado!");
                     break;
+                    
                 case 2:
-                    if (op == 2) {
+                	if (!cadastrado)
                         Metodos.msg("Sem cadastro de pessoas!");
-                        break;
-                    } else {
-                        Metodos.msg("Cadastrado!");
-                    }
+                	
                     break;
                 default:
                     Metodos.msg("Opção inválida! Por favor, escolha novamente.");
@@ -104,7 +104,7 @@ Livros)
         return pessoas;
     }
 
-    public static Livro pegaCódigoLivroISBN(ArrayList<Livro> livros) {
+    public static Livro pegaCodigoLivroISBN(ArrayList<Livro> livros) {
         String codigoBusca = Metodos.lerString("Código: ");
         for (Livro livro : livros) {
             if (livro.isbn.equalsIgnoreCase(codigoBusca)) {
@@ -123,7 +123,7 @@ Livros)
     }
 
     private static void mostrarLivrosEmprestado(ArrayList<Livro> livros) {
-        String nomePessoa = Metodos.lerString("Nome pessoa");
+        String nomePessoa = Metodos.lerString("Nome da pessoa");
         String saida = "";
 
         for (Livro l : livros) {
@@ -181,10 +181,12 @@ Livros)
 
             if (saida.equalsIgnoreCase("Nenhum livro encontrado com o gênero: " + generoLivro)) {
                 int resposta = JOptionPane.showConfirmDialog(null, "Deseja tentar novamente?", "Pergunta", JOptionPane.YES_NO_OPTION);
+                
                 if (resposta != JOptionPane.YES_OPTION) {
                     continuar = false;
                 }
-            } else {
+            } 
+            else {
                 continuar = false;
             }
         }
@@ -194,26 +196,43 @@ Livros)
         Pessoa p = new Pessoa();
         p.nome = Metodos.lerNome("Nome");
         p.idade = Metodos.lerData("Data de nascimento: ");
-        p.livroEmprestado = Metodos.lerString("Está com o livro emprestado ainda? s/n");
+        p.livroEmprestado = Metodos.lerString("Está com o livro emprestado ainda? [s/n]");
         return p;
     }
 
 
-    private static String lerISBN() {
+    private static String lerISBN(ArrayList<Livro> livros) {
         String s = Metodos.lerString("Digite o ISBN (somente números, sem hífens com 13 Numeros)").replace("-", "").replace(" ", "");
 
-        if (s.length() == 13) {
-            if (Metodos.isNumeric(s))
-                return s;
-            else {
-                Metodos.msg("Número inválido! Deve conter apenas dígitos.");
-                return lerISBN();
-            }
-        } else {
-            Metodos.msg("Número inválido! O ISBN deve ter 13 dígitos.");
-            return lerISBN();
+        if (s.length() != 13) {
+        	Metodos.msg("Número inválido! O ISBN deve ter 13 dígitos.");
+        	return lerISBN(livros);
+        }
+        	
+        else if (!Metodos.isNumeric(s)) {
+        	Metodos.msg("Número inválido! Deve conter apenas dígitos.");
+        	return lerISBN(livros);
+        }
+        
+        else if (verificaCadastroISBN(livros, s)) {
+        	Metodos.msg("Número inválido! Já foi cadastrado.");
+        	return lerISBN(livros);
+        }
+                
+        else {
+            return s;
         }
     }
+    
+    private static boolean verificaCadastroISBN(ArrayList<Livro> livros, String nr_ISBN) {
+		for (Livro l : livros) {
+			if (l.isbn.equalsIgnoreCase(nr_ISBN)) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
 
     private static String mostraLivro(Livro l) {
 
