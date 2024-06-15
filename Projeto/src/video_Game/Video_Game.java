@@ -97,7 +97,7 @@ public class Video_Game {
 			
 			for (Jogo j : jogos) {
 				if (j.plataforma.equalsIgnoreCase(plataforma)) {
-					if (Metodos.lerAno(j.data_lançamento) == ano) {
+					if (Metodos.mostraAno(j.data_lançamento) == ano) {
 						output += mostraJogo(j);
 					}
 				}

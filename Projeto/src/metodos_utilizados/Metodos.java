@@ -75,6 +75,17 @@ public class Metodos {
 		return Integer.parseInt(s);
 	}
 	
+	public static int lerAno(String txt) {
+		String s = lerString(txt);
+		
+		if (!isNumeric(s) || s.length() != 4) {
+			msg("Ano invalido!");
+			return lerAno(txt);
+		}
+		
+		return Integer.parseInt(s);
+	}
+	
 	public static Date lerData(String txt) throws ParseException {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		String s = lerString(txt).replace("/", "");
@@ -123,7 +134,7 @@ public class Metodos {
 		return sdf.format(data);
 	}
 	
-	public static int lerAno(Date data) {
+	public static int mostraAno(Date data) {
 		Calendar c = Calendar.getInstance();
 		c.setTime(data);	
 		return c.get(Calendar.YEAR);

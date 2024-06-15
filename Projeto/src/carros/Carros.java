@@ -1,14 +1,13 @@
 package carros;
 
+import java.text.ParseException;
 import java.util.ArrayList;
-
 import metodos_utilizados.Metodos;
-import video_Game.Jogo;
 
 public class Carros {
 
-	public static void main(String[] args) {
-		ArrayList<Carro> jogos = new ArrayList<Carro>();
+	public static void main(String[] args) throws ParseException {
+		ArrayList<Carro> carros = new ArrayList<Carro>();
 
 		int op = 0;
 				
@@ -16,7 +15,7 @@ public class Carros {
 			op = menu();
 			switch (op) {
 			case 1: {
-				
+				cadastrar(carros);
 				break;
 			}
 			case 2: {
@@ -54,19 +53,75 @@ public class Carros {
 		return op;
 	}
 	
-	private static void cadastrar (ArrayList<Carro> carros) {
+	private static void cadastrar (ArrayList<Carro> carros) throws ParseException {
 		Carro c = new Carro();
 		c.marca = Metodos.lerNome("Marca");
 		c.modelo = Metodos.lerNome("Modelo");
-		c.ano = Metodos.lerInt("Ano");
+		c.ano = Metodos.lerAno("Ano de fabricação");
 		c.cor = Metodos.lerNome("Cor");
 		c.placa = lerPlaca("Placa");
+		c.condutores = salvaCondutores();
+		carros.add(c);
+	}
+	
+	private static ArrayList<Condutor> salvaCondutores() throws ParseException {
+		ArrayList<Condutor> condutores = new ArrayList<Condutor>();
+		int op = 0;
+		int quantidade = 0;
+		
+		do {
+			op = Metodos.lerInt("1 - Adicionar Condutor\n"
+					+ "2 - Sair");
+			
+			if (op == 1) {
+				condutores.add(leCondutor());
+				quantidade ++;
+			}
+				
+			if (op == 2) {
+				if (quantidade == 0) {
+					Metodos.msg("Cadastre ao menos 1 condutor");
+					op = 0;
+				}
+				else
+					Metodos.msg("Cadastrado !");
+			}
+			
+		} while(op != 2);
+		
+		return condutores;
+	}
+	
+	private static Condutor leCondutor() throws ParseException {
+		Condutor c = new Condutor();
+		c.nome = Metodos.lerNome("Nome");
+		c.data_nascimento = Metodos.lerData("Data de nascimento [dd/mm/yyyy]");
+		return c;
 	}
 	
 	private static String lerPlaca (String txt) {
-		String s = Metodos.lerString(txt);
+		String s = Metodos.lerString(txt).replace("-", "").replace(" ", "");
+		
+		// Verifica se tem 7 digitos
+		if (s.length() != 7) {
+			Metodos.msg("Placa inválida, deve ter ao menos 7 digitos");
+			return lerPlaca(txt);
+		}
+		// Verifica se os 3 primeiros digitos são letras e se os 2 ultimos são numeros
+		else if(!veDigito(s, 0, 2) || !veDigito(s, 1, 2) || !veDigito(s, 2, 2) || !veDigito(s, 3, 1) || !veDigito(s, 5, 1) || !veDigito(s, 6, 1)) {
+			Metodos.msg("Placa inválida !");
+			return lerPlaca(txt);
+		}
 		
 		return s;
-		
+	}
+	
+	private static boolean veDigito(String s, int id, int op) {
+		if (op == 1) {
+			return Character.isDigit(s.charAt(id));
+		}
+		else {
+			return Character.isAlphabetic(s.charAt(id));
+		}
 	}
 }
