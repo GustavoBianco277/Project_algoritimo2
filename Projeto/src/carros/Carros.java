@@ -1,8 +1,11 @@
 package carros;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 
+import biblioteca.Livro;
+import biblioteca.Pessoa;
 import clinica.Diagnostico;
 import clinica.Paciente;
 import metodos_utilizados.Metodos;
@@ -15,8 +18,8 @@ public class Carros {
 		Ano,
 		Cor
 	}
-	public static void main(String[] args) throws ParseException {
-		ArrayList<Carro> carros = new ArrayList<Carro>();
+	public static void main(String[] args) throws ParseException, IOException {
+		ArrayList<Carro> carros = lerDados();
 
 		int op = 0;
 				
@@ -41,6 +44,7 @@ public class Carros {
 				localizarCarros(carros, Modo_Busca.Cor);
 				break;
 			case 6:
+				salvaDados(carros);
 				Metodos.msg("Programa finalizado !");
 				break;
 			default:
@@ -66,7 +70,7 @@ public class Carros {
 		Carro c = new Carro();
 		c.marca = Metodos.lerNome("Marca");
 		c.modelo = Metodos.lerNome("Modelo");
-		c.ano = Metodos.lerAno("Ano de fabricação", 1800);
+		c.ano_fabricacao = Metodos.lerAno("Ano de fabricação", 1800);
 		c.cor = Metodos.lerNome("Cor");
 		c.placa = lerPlaca("Placa");
 		c.condutores = salvaCondutores();
@@ -116,7 +120,7 @@ public class Carros {
 			output = "Nenhum carro encontrado !";
 			
 			for (Carro c : carros) {
-				if (c.ano == 2024) {
+				if (c.ano_fabricacao == 2024) {
 					output += escreveCarro(c) + "\n";
 				}
 			}
@@ -152,7 +156,7 @@ public class Carros {
 				+ "Modelo: %s \n"
 				+ "Ano de fabricação: %s \n"
 				+ "Cor: %s \n"
-				+ "Placa: %s \n", c.marca,c.modelo, c.ano, c.cor, c.placa);
+				+ "Placa: %s \n", c.marca,c.modelo, c.ano_fabricacao, c.cor, c.placa);
 	}
 	
 	private static ArrayList<Condutor> salvaCondutores() throws ParseException {
@@ -215,4 +219,50 @@ public class Carros {
 			return Character.isAlphabetic(s.charAt(id));
 		}
 	}
+	
+	// Salva todos os dados
+	 	private static void salvaDados(ArrayList<Carro> carros) throws IOException {
+	 		ArrayList<String> linhas = new ArrayList<String>();
+	 		
+	 		for (Carro c : carros) {
+	 			String line = String.format("%s_%s_%s_%s_%s", c.marca, c.modelo, c.ano_fabricacao, c.cor, c.placa);
+	 			for (Condutor p : c.condutores) {
+	 				line += String.format("_%s_%s", p.nome, Metodos.escreveData(p.data_nascimento));
+	 			}
+	 			linhas.add(line);
+	 		}
+	 		Metodos.salvaMemoria(linhas, 4);
+	 	}
+	 	
+	 	// Le todos os dados
+	 	private static ArrayList<Carro> lerDados() throws IOException, ParseException{
+	 		ArrayList<Carro> carros = new ArrayList<Carro>();
+	 		
+	 		for (String dados : Metodos.lerMemoria(4)) {
+	 			Carro c = new Carro();
+	 			String[] carro = dados.split("_");
+	 			
+	 			// le Paciente
+	 			if (carro.length >= 5) {
+	 				c.marca = carro[0];
+	 				c.modelo = carro[1];
+	 				c.ano_fabricacao = Integer.parseInt(carro[2]);
+	 				c.cor = carro[3];
+	 				c.placa = carro[4];
+	 				
+	 				//le Diagnosticos
+	 				ArrayList<Condutor> condutores = new ArrayList<Condutor>();
+	 				
+	 				for (int i = 5; i < carro.length; i+=2) {
+	 					Condutor p = new Condutor();
+	 					p.nome = carro[i];
+	 					p.data_nascimento = Metodos.converteData(carro[i+1]);
+	 					condutores.add(p);
+	 				}
+	 				c.condutores = condutores;
+	 				carros.add(c);
+	 			}
+	 		}
+	 		return carros;
+	 	}
 }

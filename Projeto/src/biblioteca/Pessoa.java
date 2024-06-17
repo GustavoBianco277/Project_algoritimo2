@@ -6,5 +6,4 @@ public class Pessoa {
    protected String nome;
    protected Date idade;
    protected String livroEmprestado;
-
 }

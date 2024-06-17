@@ -1,10 +1,13 @@
 package video_Game;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 
+import biblioteca.Livro;
+import biblioteca.Pessoa;
 import metodos_utilizados.Metodos;
 
 public class Video_Game {
@@ -14,8 +17,8 @@ public class Video_Game {
 		Nota,
 		Plataform_Ano
 	}
-	public static void main(String[] args) throws ParseException {
-		ArrayList<Jogo> jogos = new ArrayList<Jogo>();
+	public static void main(String[] args) throws ParseException, IOException {
+		ArrayList<Jogo> jogos = lerDados();
 
 		int op = 0;
 				
@@ -40,6 +43,7 @@ public class Video_Game {
 				buscaJogos(jogos, Modo_busca.Plataform_Ano);
 				break;
 			case 6:
+				salvaDados(jogos);
 				Metodos.msg("Programa finalizado !");
 				break;
 			default:
@@ -74,7 +78,7 @@ public class Video_Game {
 		String output = "Jogos cadastrados \n\n";
 		
 		for (Jogo j : jogos) {
-			output += mostraJogo(j);
+			output += mostraJogo(j) + "\n";
 		}
 		Metodos.msg(output);
 	}
@@ -133,4 +137,35 @@ public class Video_Game {
 			return lerNota(txt);
 		}	
 	}
+	
+	// Salva todos os dados
+	 	private static void salvaDados(ArrayList<Jogo> jogos) throws IOException {
+	 		ArrayList<String> linhas = new ArrayList<String>();
+	 		
+	 		for (Jogo j : jogos) {
+	 			String line = String.format("%s_%s_%s_%s", j.titulo, j.ano_lançamento, j.plataforma, j.nota);
+	 			linhas.add(line);
+	 		}
+	 		Metodos.salvaMemoria(linhas, 3);
+	 	}
+	 	
+	 	// Le todos os dados
+	 	private static ArrayList<Jogo> lerDados() throws IOException, ParseException{
+	 		ArrayList<Jogo> jogos = new ArrayList<Jogo>();
+	 		
+	 		for (String dados : Metodos.lerMemoria(3)) {
+	 			Jogo j = new Jogo();
+	 			String[] jogo = dados.split("_");
+	 			
+	 			// le Paciente
+	 			if (jogo.length >= 4) {
+	 				j.titulo = jogo[0];
+	 				j.ano_lançamento = Integer.parseInt(jogo[1]);
+	 				j.plataforma = jogo[2];
+	 				j.nota = Integer.parseInt(jogo[3]);
+	 				jogos.add(j);
+	 			}
+	 		}
+	 		return jogos;
+	 	}
 }

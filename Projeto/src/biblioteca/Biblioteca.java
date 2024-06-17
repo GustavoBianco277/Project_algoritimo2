@@ -2,21 +2,18 @@ package biblioteca;
 
 
 import javax.swing.*;
-
-import clinica.Paciente;
 import metodos_utilizados.Metodos;
-
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashSet;
-import java.util.ListResourceBundle;
 
 
 public class Biblioteca {
 
-    public static void main(String[] args) throws ParseException {
-        ArrayList<Livro> livros = new ArrayList<Livro>();
+    public static void main(String[] args) throws ParseException, IOException {
+        ArrayList<Livro> livros = lerDados();
 
         /*- Cadastra o livro -- (Método )
 1-Pode criar um método inteiro de cadastro passando as informações e as
@@ -46,6 +43,7 @@ Livros)
                 case 5: listaGenerosLivros(livros);
                     break;
                 case 6 :
+                	salvaDados(livros);
                     JOptionPane.showMessageDialog(null,"SAINDOOOOOOOO.");
             }
         } while (op != 6);
@@ -66,9 +64,9 @@ Livros)
         Livro l = new Livro();
         l.titulo = Metodos.lerNome("Titulo");
         l.autor = Metodos.lerNome("Autor");
-        l.ano = Metodos.lerData("Data de criação [dd/mm/yyyy]");
+        l.ano_publicacao = Metodos.lerData("Data de criação [dd/mm/yyyy]");
         l.genero = Metodos.lerNome("Genero do livro");
-        l.isbn = lerISBN(livros);
+        l.nr_isbn = lerISBN(livros);
         l.pessoas = salvaPessoas();
 
         livros.add(l);
@@ -107,7 +105,7 @@ Livros)
     public static Livro pegaCodigoLivroISBN(ArrayList<Livro> livros) {
         String codigoBusca = Metodos.lerString("Código: ");
         for (Livro livro : livros) {
-            if (livro.isbn.equalsIgnoreCase(codigoBusca)) {
+            if (livro.nr_isbn.equalsIgnoreCase(codigoBusca)) {
                 String saida = "Livro achado ! " + "\n" + mostraLivro(livro);
                 Metodos.msg(saida);
                 return livro;
@@ -140,7 +138,7 @@ Livros)
         Calendar c = Calendar.getInstance();
 
         for (Livro l : livros) {
-            c.setTime(l.ano);
+            c.setTime(l.ano_publicacao);
 
             if (c.get(Calendar.YEAR) == 2020) {
                 output += mostraLivro(l);
@@ -224,7 +222,7 @@ Livros)
     
     private static boolean verificaCadastroISBN(ArrayList<Livro> livros, String nr_ISBN) {
 		for (Livro l : livros) {
-			if (l.isbn.equalsIgnoreCase(nr_ISBN)) {
+			if (l.nr_isbn.equalsIgnoreCase(nr_ISBN)) {
 				return true;
 			}
 		}
@@ -237,7 +235,7 @@ Livros)
         		+ "Autor: %s\n"
                 + "Data de lançamento: %s\n"
                 + "Gênero: %s\n"
-                + "Número do ISBN: %s\n", l.titulo, l.autor, Metodos.escreveData(l.ano), l.genero, escreveISBN(l.isbn));
+                + "Número do ISBN: %s\n", l.titulo, l.autor, Metodos.escreveData(l.ano_publicacao), l.genero, escreveISBN(l.nr_isbn));
     }
     private static String escreveISBN(String nr_ISBN) {
 		String newNr_ISBN = "";
@@ -249,6 +247,52 @@ Livros)
 		}
 		return newNr_ISBN;
 	}
-
+    
+ // Salva todos os dados
+ 	private static void salvaDados(ArrayList<Livro> livros) throws IOException {
+ 		ArrayList<String> linhas = new ArrayList<String>();
+ 		
+ 		for (Livro l : livros) {
+ 			String line = String.format("%s_%s_%s_%s_%s", l.titulo, l.autor, Metodos.escreveData(l.ano_publicacao), l.genero, l.nr_isbn);
+ 			for (Pessoa p : l.pessoas) {
+ 				line += String.format("_%s_%s_%s", p.nome, Metodos.escreveData(p.idade), p.livroEmprestado);
+ 			}
+ 			linhas.add(line);
+ 		}
+ 		Metodos.salvaMemoria(linhas, 1);
+ 	}
+ 	
+ 	// Le todos os dados
+ 	private static ArrayList<Livro> lerDados() throws IOException, ParseException{
+ 		ArrayList<Livro> livros = new ArrayList<Livro>();
+ 		
+ 		for (String dados : Metodos.lerMemoria(1)) {
+ 			Livro l = new Livro();
+ 			String[] livro = dados.split("_");
+ 			
+ 			// le Paciente
+ 			if (livro.length >= 5) {
+ 				l.titulo = livro[0];
+ 				l.autor = livro[1];
+ 				l.ano_publicacao = Metodos.converteData(livro[2]);
+ 				l.genero = livro[3];
+ 				l.nr_isbn = livro[4];
+ 				
+ 				//le Diagnosticos
+ 				ArrayList<Pessoa> pessoas = new ArrayList<Pessoa>();
+ 				
+ 				for (int i = 5; i < livro.length; i+=3) {
+ 					Pessoa p = new Pessoa();
+ 					p.nome = livro[i];
+ 					p.idade = Metodos.converteData(livro[i+1]);
+ 					p.livroEmprestado = livro[i+2];
+ 					pessoas.add(p);
+ 				}
+ 				l.pessoas = pessoas;
+ 				livros.add(l);
+ 			}
+ 		}
+ 		return livros;
+ 	}
 }
 
