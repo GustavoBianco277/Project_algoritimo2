@@ -2,13 +2,14 @@ package clinica;
 import metodos_utilizados.Metodos;
 import java.util.ArrayList;
 import java.util.Calendar;
-
+import java.util.List;
+import java.io.IOException;
 import java.text.ParseException;
 
 public class Clinica {
 
-	public static void main(String[] args) throws ParseException {
-		ArrayList<Paciente> pacientes = new ArrayList<Paciente>();
+	public static void main(String[] args) throws ParseException, IOException {
+		ArrayList<Paciente> pacientes = lerDados();
 		
 		int op = 0;
 		
@@ -33,6 +34,7 @@ public class Clinica {
 				todosDeUmGenero(pacientes);
 				break;
 			case 6:
+				salvaDados(pacientes);
 				Metodos.msg("Programa finalizado !");
 				break;
 			default:
@@ -59,14 +61,14 @@ public class Clinica {
 		p.nome = Metodos.lerNome("Nome");
 		p.data_nascimento = Metodos.lerData("Data de nascimento [dd/mm/yyyy]");
 		p.genero = Metodos.lerGenero("Gênero [m/f]");
-		p.nr_SUS = lerNumeroSUS(pacientes);
+		p.nr_SUS = lerNumeroSUS(pacientes, false);
 		p.diagnosticos = salvaDiagnosticos();
 		
 		pacientes.add(p);
 	}
 	
 	private static void procurarPeloSUS(ArrayList<Paciente> pacientes) {
-		String nr_SUS = lerNumeroSUS(pacientes);
+		String nr_SUS = lerNumeroSUS(pacientes, true);
 		String output = "Nenhum paciente encontrado !";
 		
 		for (Paciente p : pacientes) {
@@ -86,7 +88,7 @@ public class Clinica {
 		String output = "Nenhum paciente encontrado !";
 		
 		for (Paciente p : pacientes) {
-			if (p.nome.equals(nome)) {
+			if (p.nome.equalsIgnoreCase(nome)) {
 				output = "Diagnosticos de " + p.nome +"\n\n";
 				
 				for (Diagnostico d : p.diagnosticos) {
@@ -116,8 +118,8 @@ public class Clinica {
 		String output = "Pacientes do Gênero "+genero + "\n\n";
 		
 		for (Paciente p : pacientes) {
-			if (p.genero.equals(genero)) {
-				output += mostraPaciente(p);
+			if (p.genero.equalsIgnoreCase(genero)) {
+				output += mostraPaciente(p) + "\n";
 			}
 		}
 		Metodos.msg(output);
@@ -130,23 +132,23 @@ public class Clinica {
 				+ "Medico responsavel: %s\n", diagnostico.sintomas, diagnostico.descricao, Metodos.escreveData(diagnostico.data), diagnostico.medicoResponsavel);
 	}
 	
-	private static String lerNumeroSUS(ArrayList<Paciente> pacientes) {
+	private static String lerNumeroSUS(ArrayList<Paciente> pacientes, boolean busca) {
 		String s = Metodos.lerString("Numero do SUS").replace("-", "").replace(" ", "");
 		
 		if (s.length() != 15) 
 		{
 			Metodos.msg("Número inválido! O SUS deve ter 15 dígitos.");
-			return lerNumeroSUS(pacientes);
+			return lerNumeroSUS(pacientes, busca);
 		}
 		
 		else if (!Metodos.isNumeric(s)) {
 			Metodos.msg("Número inválido! Deve conter apenas dígitos.");
-			return lerNumeroSUS(pacientes);
+			return lerNumeroSUS(pacientes, busca);
 		}
 		
-		else if (verificaCadastroSUS(pacientes, s)) {
+		else if (!busca && verificaCadastroSUS(pacientes, s)) {
 			Metodos.msg("Número inválido! Já foi cadastrado.");
-			return lerNumeroSUS(pacientes);
+			return lerNumeroSUS(pacientes, busca);
 		}
 			
 		else {
@@ -201,6 +203,7 @@ public class Clinica {
 		return d;
 		
 	}
+	
 	private static String mostraPaciente(Paciente p){
 		return String.format("Nome: %s\n"
 				+ "Data de nascimento: %s\n"
@@ -217,5 +220,52 @@ public class Clinica {
 			newNr_SUS += nr_SUS.charAt(i);
 		}
 		return newNr_SUS;
+	}
+	
+	// Salva todos os dados
+	private static void salvaDados(ArrayList<Paciente> pacientes) throws IOException {
+		ArrayList<String> linhas = new ArrayList<String>();
+		
+		for (Paciente p : pacientes) {
+			String line = String.format("%s_%s_%s_%s", p.nome, Metodos.escreveData(p.data_nascimento), p.genero, p.nr_SUS);
+			for (Diagnostico d : p.diagnosticos) {
+				line += String.format("_%s_%s_%s_%s", d.sintomas, d.descricao, Metodos.escreveData(d.data), d.medicoResponsavel);
+			}
+			linhas.add(line);
+		}
+		Metodos.salvaMemoria(linhas, 2);
+	}
+	
+	// Le todos os dados
+	private static ArrayList<Paciente> lerDados() throws IOException, ParseException{
+		ArrayList<Paciente> pacientes = new ArrayList<Paciente>();
+		
+		for (String dados : Metodos.lerMemoria(2)) {
+			Paciente p = new Paciente();
+			String[] paciente = dados.split("_");
+			
+			// le Paciente
+			if (paciente.length >= 4) {
+				p.nome = paciente[0];
+				p.data_nascimento = Metodos.converteData(paciente[1]);
+				p.genero = paciente[2];
+				p.nr_SUS = paciente[3];
+				
+				//le Diagnosticos
+				ArrayList<Diagnostico> diagnosticos = new ArrayList<Diagnostico>();
+				
+				for (int i = 4; i < paciente.length; i+=4) {
+					Diagnostico d = new Diagnostico();
+					d.sintomas = paciente[i];
+					d.descricao = paciente[i+1];
+					d.data = Metodos.converteData(paciente[i+2]);
+					d.medicoResponsavel = paciente[i+3];
+					diagnosticos.add(d);
+				}
+				p.diagnosticos = diagnosticos;
+				pacientes.add(p);
+			}
+		}
+		return pacientes;
 	}
 }

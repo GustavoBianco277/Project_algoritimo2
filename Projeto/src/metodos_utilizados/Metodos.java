@@ -1,13 +1,17 @@
 package metodos_utilizados;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import javax.swing.JOptionPane;
-
-import clinica.Paciente;
 
 public class Metodos {
 	
@@ -86,6 +90,11 @@ public class Metodos {
 		return Integer.parseInt(s);
 	}
 	
+	public static Date converteData(String data) throws ParseException {
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		return sdf.parse(data);
+	}
+	
 	public static Date lerData(String txt) throws ParseException {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		String s = lerString(txt).replace("/", "");
@@ -150,5 +159,27 @@ public class Metodos {
 			idade--;
 		
 		return idade;
+	}
+	
+	public static ArrayList<String> lerMemoria(int op) throws IOException {
+		Path path;
+		
+		if (op == 1) path = Paths.get("C:\\Users\\PC-Bianco\\git\\repository\\Projeto\\src\\biblioteca\\bd_biblioteca.txt");
+		else if (op == 2) path = Paths.get("C:\\Users\\PC-Bianco\\git\\repository\\Projeto\\src\\clinica\\bd_clinica.txt");
+		else if (op == 3) path = Paths.get("C:\\Users\\PC-Bianco\\git\\repository\\Projeto\\src\\video_Game\\bd_video_games.txt");
+		else path = Paths.get("C:\\Users\\PC-Bianco\\git\\repository\\Projeto\\src\\carros\\bd_carros.txt");
+		
+		return (ArrayList<String>) Files.readAllLines(path);
+	}
+	
+	public static void salvaMemoria(ArrayList<String> linhas, int op) throws IOException {
+		Path path;
+		
+		if (op == 1) path = Paths.get("C:\\Users\\PC-Bianco\\git\\repository\\Projeto\\src\\biblioteca\\bd_biblioteca.txt");
+		else if (op == 2) path = Paths.get("C:\\Users\\PC-Bianco\\git\\repository\\Projeto\\src\\clinica\\bd_clinica.txt");
+		else if (op == 3) path = Paths.get("C:\\Users\\PC-Bianco\\git\\repository\\Projeto\\src\\video_Game\\bd_video_games.txt");
+		else path = Paths.get("C:\\Users\\PC-Bianco\\git\\repository\\Projeto\\src\\carros\\bd_carros.txt");
+		
+		Files.write(path, linhas);
 	}
 }
