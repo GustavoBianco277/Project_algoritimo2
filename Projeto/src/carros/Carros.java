@@ -2,10 +2,19 @@ package carros;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+
+import clinica.Diagnostico;
+import clinica.Paciente;
 import metodos_utilizados.Metodos;
 
 public class Carros {
 
+	enum Modo_Busca{
+		Placa,
+		Nome,
+		Ano,
+		Cor
+	}
 	public static void main(String[] args) throws ParseException {
 		ArrayList<Carro> carros = new ArrayList<Carro>();
 
@@ -19,17 +28,17 @@ public class Carros {
 				break;
 			}
 			case 2: {
-				
+				localizarCarros(carros, Modo_Busca.Placa);
 				break;
 			}
 			case 3:
-				
+				localizarCarros(carros, Modo_Busca.Nome);
 				break;
 			case 4:
-				
+				localizarCarros(carros, Modo_Busca.Ano);
 				break;
 			case 5:
-				
+				localizarCarros(carros, Modo_Busca.Cor);
 				break;
 			case 6:
 				Metodos.msg("Programa finalizado !");
@@ -62,6 +71,88 @@ public class Carros {
 		c.placa = lerPlaca("Placa");
 		c.condutores = salvaCondutores();
 		carros.add(c);
+	}
+	
+	private static void localizarCarros(ArrayList<Carro> carros, Modo_Busca md_busca) {
+		String output = "";
+		switch (md_busca) {
+		case Placa:
+			output = "Nenhum condutor encontrado !";
+			String nr_placa = lerPlaca("Placa");
+			
+			for (Carro c : carros) {
+				if (c.placa.equals(nr_placa)) {
+					for(Condutor condutor : c.condutores) {
+						output += String.format("Condutor: %s\n"
+								+ "Data de nascimento: %s\n", condutor.nome, Metodos.escreveData(condutor.data_nascimento));
+					}
+					break;
+				}
+			}
+			
+			if (output.length() > 30)
+				output = output.replace("Nenhum condutor encontrado !", "Condutores\n\n");
+			
+			break;
+			
+		case Nome:
+			output = "Nenhum carro disponivel!";
+			String nome = Metodos.lerNome("Nome");
+			
+			for (Carro c : carros) {
+				for(Condutor condutor : c.condutores) {
+					if (condutor.nome.equals(nome)) {
+						output += escreveCarro(c) + "\n";
+					}
+				}
+			}	
+			
+			if (output.length() > 30)
+				output = output.replace("Nenhum carro disponivel!", "Carros\n\n");
+			
+			break;
+			
+		case Ano:
+			output = "Nenhum carro encontrado !";
+			
+			for (Carro c : carros) {
+				if (c.ano == 2024) {
+					output += escreveCarro(c) + "\n";
+				}
+			}
+			
+			if (output.length() > 30)
+				output = output.replace("Nenhum carro encontrado !", "Carros\n\n");
+			
+			break;
+			
+		case Cor:
+			output = "Nenhum carro encontrado !";
+			String cor = Metodos.lerNome("Cor");
+			
+			for (Carro c : carros) {
+				if (c.cor.equals(cor)) {
+					output += escreveCarro(c) + "\n";
+				}
+			}
+			
+			if (output.length() > 30)
+				output = output.replace("Nenhum carro encontrado !", "Carros\n\n");
+			
+			break;
+
+		default:
+			break;
+		}
+		Metodos.msg(output);
+	} 
+	
+	private static String escreveCarro(Carro c) {
+		return String.format("Marca: %s \n"
+				+ "Modelo: %s \n"
+				+ "Ano de fabricação: %s \n"
+				+ "Cor: %s \n"
+				+ "Placa: %s \n", c.marca,c.modelo, c.ano, c.cor, c.placa);
 	}
 	
 	private static ArrayList<Condutor> salvaCondutores() throws ParseException {
