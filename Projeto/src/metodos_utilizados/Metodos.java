@@ -79,15 +79,21 @@ public class Metodos {
 		return Integer.parseInt(s);
 	}
 	
-	public static int lerAno(String txt) {
+	public static int lerAno(String txt, int min) {
 		String s = lerString(txt);
 		
-		if (!isNumeric(s) || s.length() != 4) {
+		if (!isNumeric(s) || s.length() != 4 ) {
 			msg("Ano invalido!");
-			return lerAno(txt);
+			return lerAno(txt, min);
+		}
+		int ano = Integer.parseInt(s);
+		
+		if (ano < min || ano > 2024) {
+			msg("Ano invalido!");
+			return lerAno(txt, min);
 		}
 		
-		return Integer.parseInt(s);
+		return ano;
 	}
 	
 	public static Date converteData(String data) throws ParseException {
@@ -112,7 +118,6 @@ public class Metodos {
 				
 				if (i == 1 || i == 3)
 					data += "/";
-
 			}
 
 			// Válida a data

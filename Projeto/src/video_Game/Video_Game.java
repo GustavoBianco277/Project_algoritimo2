@@ -64,7 +64,7 @@ public class Video_Game {
 	private static void cadastrar(ArrayList<Jogo> jogos) throws ParseException {
 		Jogo j = new Jogo();
 		j.titulo = Metodos.lerNome("Titulo");
-		j.data_lançamento = Metodos.lerData("Data de lançamento [dd/mm/yyyy]");
+		j.ano_lançamento = Metodos.lerAno("Ano de lançamento", 1990);
 		j.plataforma = Metodos.lerString("Plataforma");
 		j.nota = lerNota("Nota [1 a 5]");
 		jogos.add(j);
@@ -97,7 +97,7 @@ public class Video_Game {
 			
 			for (Jogo j : jogos) {
 				if (j.plataforma.equalsIgnoreCase(plataforma)) {
-					if (Metodos.mostraAno(j.data_lançamento) == ano) {
+					if (j.ano_lançamento == ano) {
 						output += mostraJogo(j);
 					}
 				}
@@ -117,9 +117,9 @@ public class Video_Game {
 	
 	private static String mostraJogo(Jogo j) {
 		return String.format("Titulo: %s\n"
-				+ "Data de lançamento: %s\n"
+				+ "Ano de lançamento: %s\n"
 				+ "Plataforma: %s\n"
-				+ "Nota: %s\n", j.titulo, Metodos.escreveData(j.data_lançamento), j.plataforma, j.nota);
+				+ "Nota: %s\n", j.titulo, j.ano_lançamento, j.plataforma, j.nota);
 	}
 	
 	private static int lerNota(String txt) {

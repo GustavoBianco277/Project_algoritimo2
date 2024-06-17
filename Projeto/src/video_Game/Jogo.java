@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class Jogo {
 	protected String titulo;
-	protected Date data_lançamento;
+	protected int ano_lançamento;
 	protected String plataforma;
 	protected int nota;
 }

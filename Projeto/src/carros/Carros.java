@@ -66,7 +66,7 @@ public class Carros {
 		Carro c = new Carro();
 		c.marca = Metodos.lerNome("Marca");
 		c.modelo = Metodos.lerNome("Modelo");
-		c.ano = Metodos.lerAno("Ano de fabricação");
+		c.ano = Metodos.lerAno("Ano de fabricação", 1800);
 		c.cor = Metodos.lerNome("Cor");
 		c.placa = lerPlaca("Placa");
 		c.condutores = salvaCondutores();
