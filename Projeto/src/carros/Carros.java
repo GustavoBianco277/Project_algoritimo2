@@ -72,7 +72,7 @@ public class Carros {
 		c.modelo = Metodos.lerNome("Modelo");
 		c.ano_fabricacao = Metodos.lerAno("Ano de fabricação", 1800);
 		c.cor = Metodos.lerNome("Cor");
-		c.placa = lerPlaca("Placa");
+		c.placa = lerPlaca(carros);
 		c.condutores = salvaCondutores();
 		carros.add(c);
 	}
@@ -82,7 +82,7 @@ public class Carros {
 		switch (md_busca) {
 		case Placa:
 			output = "Nenhum condutor encontrado !";
-			String nr_placa = lerPlaca("Placa");
+			String nr_placa = lerPlaca(carros);
 			
 			for (Carro c : carros) {
 				if (c.placa.equals(nr_placa)) {
@@ -191,25 +191,46 @@ public class Carros {
 		Condutor c = new Condutor();
 		c.nome = Metodos.lerNome("Nome");
 		c.data_nascimento = Metodos.lerData("Data de nascimento [dd/mm/yyyy]");
-		return c;
+		
+		if (Metodos.calculaIdade(c.data_nascimento) < 18) {
+			Metodos.msg("O condutor de ter 18 anos ou mais");
+			return leCondutor();
+		}
+		else
+			return c;
 	}
 	
-	private static String lerPlaca (String txt) {
-		String s = Metodos.lerString(txt).replace("-", "").replace(" ", "");
+	private static String lerPlaca (ArrayList<Carro> carros) {
+		String s = Metodos.lerString("Placa do carro").replace("-", "").replace(" ", "");
 		
 		// Verifica se tem 7 digitos
 		if (s.length() != 7) {
 			Metodos.msg("Placa inválida, deve ter ao menos 7 digitos");
-			return lerPlaca(txt);
+			return lerPlaca(carros);
 		}
 		// Verifica se os 3 primeiros digitos são letras e se os 2 ultimos são numeros
-		else if(!veDigito(s, 0, 2) || !veDigito(s, 1, 2) || !veDigito(s, 2, 2) || !veDigito(s, 3, 1) || !veDigito(s, 5, 1) || !veDigito(s, 6, 1)) {
+		else if (!veDigito(s, 0, 2) || !veDigito(s, 1, 2) || !veDigito(s, 2, 2) || !veDigito(s, 3, 1) || !veDigito(s, 5, 1) || !veDigito(s, 6, 1)) {
 			Metodos.msg("Placa inválida !");
-			return lerPlaca(txt);
+			return lerPlaca(carros);
 		}
-		
-		return s;
+		// Verifica se não tem essa placa cadastrada
+		else if (verificaCadastroPlaca(carros, s)) {
+        	Metodos.msg("Placa inválida! Já foi cadastrado.");
+        	return lerPlaca(carros);
+        }
+		else
+			return s;
 	}
+	
+	 private static boolean verificaCadastroPlaca(ArrayList<Carro> carros, String placa) {
+			for (Carro c : carros) {
+				if (c.placa.equalsIgnoreCase(placa)) {
+					return true;
+				}
+			}
+			
+			return false;
+		}
 	
 	private static boolean veDigito(String s, int id, int op) {
 		if (op == 1) {

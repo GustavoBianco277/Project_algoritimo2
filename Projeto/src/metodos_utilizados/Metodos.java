@@ -160,30 +160,37 @@ public class Metodos {
 		dataSet.setTime(data);
 		int idade = hoje.get(Calendar.YEAR) - dataSet.get(Calendar.YEAR);
 		
-		if (hoje.before(dataSet))
-			idade--;
+		// Ajusta a idade se o aniversário ainda não ocorreu no ano atual
+		if (hoje.get(Calendar.MONTH) < dataSet.get(Calendar.MONTH) || hoje.get(Calendar.MONTH) == dataSet.get(Calendar.MONTH) &&
+				(hoje.get(Calendar.DAY_OF_MONTH) < dataSet.get(Calendar.DAY_OF_MONTH))) {
+            idade--;
+        }
 		
 		return idade;
 	}
 	
 	public static ArrayList<String> lerMemoria(int op) throws IOException {
 		Path path;
+		// Pega o diretorio do projeto
+		String userDirectoryPath = System.getProperty("user.dir");
 		
-		if (op == 1) path = Paths.get("C:\\Users\\PC-Bianco\\git\\repository\\Projeto\\src\\biblioteca\\bd_biblioteca.txt");
-		else if (op == 2) path = Paths.get("C:\\Users\\PC-Bianco\\git\\repository\\Projeto\\src\\clinica\\bd_clinica.txt");
-		else if (op == 3) path = Paths.get("C:\\Users\\PC-Bianco\\git\\repository\\Projeto\\src\\video_Game\\bd_video_games.txt");
-		else path = Paths.get("C:\\Users\\PC-Bianco\\git\\repository\\Projeto\\src\\carros\\bd_carros.txt");
+		if (op == 1) path = Paths.get(userDirectoryPath+"\\src\\biblioteca\\bd_biblioteca.txt");
+		else if (op == 2) path = Paths.get(userDirectoryPath+"\\src\\clinica\\bd_clinica.txt");
+		else if (op == 3) path = Paths.get(userDirectoryPath+"\\src\\video_Game\\bd_video_games.txt");
+		else path = Paths.get(userDirectoryPath+"\\src\\carros\\bd_carros.txt");
 		
 		return (ArrayList<String>) Files.readAllLines(path);
 	}
 	
 	public static void salvaMemoria(ArrayList<String> linhas, int op) throws IOException {
 		Path path;
+		// Pega o diretorio do projeto
+		String userDirectoryPath = System.getProperty("user.dir");
 		
-		if (op == 1) path = Paths.get("C:\\Users\\PC-Bianco\\git\\repository\\Projeto\\src\\biblioteca\\bd_biblioteca.txt");
-		else if (op == 2) path = Paths.get("C:\\Users\\PC-Bianco\\git\\repository\\Projeto\\src\\clinica\\bd_clinica.txt");
-		else if (op == 3) path = Paths.get("C:\\Users\\PC-Bianco\\git\\repository\\Projeto\\src\\video_Game\\bd_video_games.txt");
-		else path = Paths.get("C:\\Users\\PC-Bianco\\git\\repository\\Projeto\\src\\carros\\bd_carros.txt");
+		if (op == 1) path = Paths.get(userDirectoryPath+"\\src\\biblioteca\\bd_biblioteca.txt");
+		else if (op == 2) path = Paths.get(userDirectoryPath+"\\src\\clinica\\bd_clinica.txt");
+		else if (op == 3) path = Paths.get(userDirectoryPath+"\\src\\video_Game\\bd_video_games.txt");
+		else path = Paths.get(userDirectoryPath+"\\src\\carros\\bd_carros.txt");
 		
 		Files.write(path, linhas);
 	}
