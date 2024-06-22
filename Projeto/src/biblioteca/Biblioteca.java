@@ -123,7 +123,7 @@ Livros)
             for (Pessoa ps : l.pessoas){
                 if (nomePessoa.equalsIgnoreCase(ps.nome) && ps.livroEmprestado.equalsIgnoreCase("s")){
                     saida += "\nNome : " + ps.nome + "\n" +
-                            "Idade: " + Metodos.calculaIdade(ps.idade) + "\n" + mostraLivro(l);
+                            "Idade: " + Metodos.calculaIdade(ps.data_nascimento) + "\n" + mostraLivro(l);
                 }
             }
         }
@@ -192,7 +192,7 @@ Livros)
     private static Pessoa lePessoa() throws ParseException {
         Pessoa p = new Pessoa();
         p.nome = Metodos.lerNome("Nome");
-        p.idade = Metodos.lerData("Data de nascimento: ");
+        p.data_nascimento = Metodos.lerData("Data de nascimento: ");
         p.livroEmprestado = Metodos.lerString("Está com o livro emprestado ainda? [s/n]");
         return p;
     }
@@ -255,7 +255,7 @@ Livros)
  		for (Livro l : livros) {
  			String line = String.format("%s_%s_%s_%s_%s", l.titulo, l.autor, Metodos.escreveData(l.ano_publicacao), l.genero, l.nr_isbn);
  			for (Pessoa p : l.pessoas) {
- 				line += String.format("_%s_%s_%s", p.nome, Metodos.escreveData(p.idade), p.livroEmprestado);
+ 				line += String.format("_%s_%s_%s", p.nome, Metodos.escreveData(p.data_nascimento), p.livroEmprestado);
  			}
  			linhas.add(line);
  		}
@@ -284,7 +284,7 @@ Livros)
  				for (int i = 5; i < livro.length; i+=3) {
  					Pessoa p = new Pessoa();
  					p.nome = livro[i];
- 					p.idade = Metodos.converteData(livro[i+1]);
+ 					p.data_nascimento = Metodos.converteData(livro[i+1]);
  					p.livroEmprestado = livro[i+2];
  					pessoas.add(p);
  				}

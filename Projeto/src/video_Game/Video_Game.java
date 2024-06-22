@@ -91,7 +91,7 @@ public class Video_Game {
 			
 			for (Jogo j : jogos) {
 				if (j.plataforma.equalsIgnoreCase(plataforma)) {
-					output += mostraJogo(j);
+					output += mostraJogo(j) + "\n";
 				}
 			}
 		}
@@ -102,7 +102,7 @@ public class Video_Game {
 			for (Jogo j : jogos) {
 				if (j.plataforma.equalsIgnoreCase(plataforma)) {
 					if (j.ano_lançamento == ano) {
-						output += mostraJogo(j);
+						output += mostraJogo(j)+ "\n";
 					}
 				}
 			}
@@ -112,7 +112,7 @@ public class Video_Game {
 			
 			for (Jogo j : jogos) {
 				if (j.nota == nota) {
-					output += mostraJogo(j);
+					output += mostraJogo(j)+ "\n";
 				}
 			}
 		}

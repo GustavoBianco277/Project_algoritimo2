@@ -4,6 +4,6 @@ import java.util.Date;
 
 public class Pessoa {
    protected String nome;
-   protected Date idade;
+   protected Date data_nascimento;
    protected String livroEmprestado;
 }

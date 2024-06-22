@@ -72,7 +72,7 @@ public class Carros {
 		c.modelo = Metodos.lerNome("Modelo");
 		c.ano_fabricacao = Metodos.lerAno("Ano de fabricação", 1800);
 		c.cor = Metodos.lerNome("Cor");
-		c.placa = lerPlaca(carros);
+		c.placa = lerPlaca(carros, false);
 		c.condutores = salvaCondutores();
 		carros.add(c);
 	}
@@ -82,10 +82,10 @@ public class Carros {
 		switch (md_busca) {
 		case Placa:
 			output = "Nenhum condutor encontrado !";
-			String nr_placa = lerPlaca(carros);
+			String nr_placa = lerPlaca(carros, true);
 			
 			for (Carro c : carros) {
-				if (c.placa.equals(nr_placa)) {
+				if (c.placa.equalsIgnoreCase(nr_placa)) {
 					for(Condutor condutor : c.condutores) {
 						output += String.format("Condutor: %s\n"
 								+ "Data de nascimento: %s\n", condutor.nome, Metodos.escreveData(condutor.data_nascimento));
@@ -105,7 +105,7 @@ public class Carros {
 			
 			for (Carro c : carros) {
 				for(Condutor condutor : c.condutores) {
-					if (condutor.nome.equals(nome)) {
+					if (condutor.nome.equalsIgnoreCase(nome)) {
 						output += escreveCarro(c) + "\n";
 					}
 				}
@@ -135,7 +135,7 @@ public class Carros {
 			String cor = Metodos.lerNome("Cor");
 			
 			for (Carro c : carros) {
-				if (c.cor.equals(cor)) {
+				if (c.cor.equalsIgnoreCase(cor)) {
 					output += escreveCarro(c) + "\n";
 				}
 			}
@@ -200,23 +200,23 @@ public class Carros {
 			return c;
 	}
 	
-	private static String lerPlaca (ArrayList<Carro> carros) {
+	private static String lerPlaca (ArrayList<Carro> carros, boolean busca) {
 		String s = Metodos.lerString("Placa do carro").replace("-", "").replace(" ", "");
 		
 		// Verifica se tem 7 digitos
 		if (s.length() != 7) {
 			Metodos.msg("Placa inválida, deve ter ao menos 7 digitos");
-			return lerPlaca(carros);
+			return lerPlaca(carros,busca);
 		}
 		// Verifica se os 3 primeiros digitos são letras e se os 2 ultimos são numeros
 		else if (!veDigito(s, 0, 2) || !veDigito(s, 1, 2) || !veDigito(s, 2, 2) || !veDigito(s, 3, 1) || !veDigito(s, 5, 1) || !veDigito(s, 6, 1)) {
 			Metodos.msg("Placa inválida !");
-			return lerPlaca(carros);
+			return lerPlaca(carros,busca);
 		}
 		// Verifica se não tem essa placa cadastrada
-		else if (verificaCadastroPlaca(carros, s)) {
+		else if (verificaCadastroPlaca(carros, s) && !busca) {
         	Metodos.msg("Placa inválida! Já foi cadastrado.");
-        	return lerPlaca(carros);
+        	return lerPlaca(carros,busca);
         }
 		else
 			return s;
